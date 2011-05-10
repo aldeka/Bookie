@@ -107,6 +107,14 @@
         $('#bookie-panel').get(0).hidePopup();
     };
 
+    $b.onBookieLogoClick = function() {
+        if (window.gBrowser !== undefined) {
+            var currentTab = gBrowser.contentDocument;
+            currentTab.location.href = $b.settings.get('api_url');
+        }
+        $('#bookie-panel').get(0).hidePopup();
+    };
+
     $b.ui.notify = function(notification) {
         $b.log('called notify');
         // showBadge(notification);
@@ -193,6 +201,7 @@
         $('#bookie-submit').attr('command', 'bookie-submit-cmd');
         $('#delete').attr('command', 'bookie-delete-cmd');
         $($b.EVENTID).bind($b.events.DELETE, function(ev) {$('#bookie-panel').get(0).hidePopup()});
+        $('#main_site').bind('click', function(ev) {$b.onBookieLogoClick();});
     };
 
     $b.shutdown = function() {
