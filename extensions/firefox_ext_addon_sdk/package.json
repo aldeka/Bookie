@@ -1,0 +1,9 @@
+{
+    "name": "bookie", 
+    "license": "MPL 1.1/GPL 2.0/LGPL 2.1", 
+    "author": "Bookie", 
+    "version": "0.01", 
+    "fullName": "bookie", 
+    "id": "bookie@bmark.us", 
+    "description": "A Firefox extension for working with Bookie (http://bmark.us), an open source tool for storing your bookmarks. Bookie is an alternative to delicious.com."
+}
