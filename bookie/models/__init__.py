@@ -28,8 +28,6 @@ from sqlalchemy.orm.interfaces import MapperExtension
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.sql import func
 from sqlalchemy.sql import and_
-from sqlalchemy.sql.expression import ClauseElement
-from sqlalchemy.sql.expression import alias
 
 from zope.sqlalchemy import ZopeTransactionExtension
 
@@ -398,12 +396,20 @@ class BmarkMgr(object):
                            filter(Hashed.url == clean_url).one()
 
     @staticmethod
+    def get_by_hash(hash_id):
+        """Get a bmark from the system via the hash_id"""
+        # normalize the url
+        return Bmark.query.join(Bmark.hashed).\
+                           options(contains_eager(Bmark.hashed)).\
+                           filter(Hashed.hash_id == hash_id).one()
+
+    @staticmethod
     def find(limit=50, order_by=None, page=0, tags=None, with_tags=True):
         """Search for specific sets of bookmarks"""
         qry = Bmark.query
         offset = limit * page
 
-        if order_by is not None:
+        if order_by is None:
             order_by = Bmark.stored.desc()
 
         if not tags:
@@ -516,6 +522,11 @@ class BmarkMgr(object):
 
         return mark
 
+    @staticmethod
+    def hash_list():
+        """Get a list of the hash_ids we have stored"""
+        return DBSession.query(Bmark.hash_id).all()
+
 
 class BmarkTools(object):
     """Some stupid tools to help work with bookmarks"""
@@ -547,6 +558,7 @@ class Bmark(Base):
     extended = Column(UnicodeText())
     stored = Column(DateTime, default=datetime.now)
     updated = Column(DateTime, onupdate=datetime.now)
+    clicks = Column(Integer, default=0)
 
     # DON"T USE
     tag_str = Column(UnicodeText())
